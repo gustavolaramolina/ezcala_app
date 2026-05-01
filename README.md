@@ -4,11 +4,11 @@ This repository contains a **minimal proof‑of‑concept (MVP)** for the Ezcala
 
 ## Contents
 
-* `main.py` – FastAPI application exposing endpoints for synchronization, matching, scoring, and insight generation.  It also serves a simple HTML dashboard using Jinja2.
-* `modules/` – A set of Python modules implementing the core “agents” described in the architecture: `sync_agent.py`, `matching_agent.py`, `scoring_agent.py`, and `insights_agent.py`.
-* `data/` – Contains sample invoice and payment data in JSON format.  These files simulate NetSuite’s invoices and payments endpoints (NetSuite exposes endpoints such as `GET /invoice` and `GET /payment` to retrieve invoices and payments【747782438211344†L280-L297】).
-* `templates/` – A basic Jinja2 template used to render the dashboard.
-* `requirements.txt` – Lists the Python packages required to run this MVP (FastAPI, Uvicorn, Jinja2 and Pandas).
+* `streamlit_app.py` – Modern Streamlit dashboard with interactive visualizations, KPI metrics, and data analysis tools.
+* `modules/` – A set of Python modules implementing the core "agents" described in the architecture: `sync_agent.py`, `matching_agent.py`, `scoring_agent.py`, and `insights_agent.py`.
+* `data/` – Contains sample invoice and payment data in JSON format.  These files simulate NetSuite's invoices and payments endpoints.
+* `.streamlit/config.toml` – Streamlit configuration for theme and appearance.
+* `requirements.txt` – Lists the Python packages required to run this MVP (Streamlit, Plotly, and Pandas).
 
 ## Getting Started
 
@@ -23,22 +23,25 @@ This repository contains a **minimal proof‑of‑concept (MVP)** for the Ezcala
    pip install -r requirements.txt
    ```
 
-2. **Run the API server.**  Start the FastAPI app with Uvicorn:
+2. **Run the dashboard:**
 
    ```bash
-   uvicorn main:app --reload
+   streamlit run streamlit_app.py
    ```
 
-   The API will be available at `http://localhost:8000`.  Navigate to `/dashboard` in your browser to see the HTML dashboard.
+   The dashboard will be available at `http://localhost:8501`.
 
-3. **Explore the API.**  FastAPI automatically generates interactive docs at `http://localhost:8000/docs`.  You can call:
+3. **Use the dashboard:**
 
-   * `POST /sync` – Simulates fetching invoices and payments from NetSuite and caches them.
-   * `POST /match` – Runs a deterministic matching algorithm to reconcile payments with invoices.
-   * `POST /score` – Computes customer risk scores based on outstanding amounts and payment behaviour.
-   * `POST /insights` – Generates a textual summary of the cash‑flow situation and prioritised customers.
-
-4. **View the dashboard.**  Open `http://localhost:8000/dashboard` to view the aggregated results.  It shows each customer’s invoices and payments, the match status, risk score, and a short insight message.
+   * Click **"🔄 Sync Data"** in the sidebar to load invoices and payments from JSON files.
+   * View **Key Metrics** including Total AR Outstanding, Unmatched Payments, Average Days Overdue, and Collection Effectiveness.
+   * Navigate between tabs:
+     - **📈 Overview** for interactive charts (AR aging, risk scores, match confidence, payment timeline)
+     - **🧾 Invoices** for detailed invoice table with aging analysis
+     - **💳 Payments** for payment details and statistics
+     - **🔗 Matches** for payment-to-invoice matching results with confidence scores
+     - **💡 Insights** for AI-generated cash flow analysis and customer risk priorities
+   * Use **sidebar filters** to filter by customer, date range, and confidence threshold.
 
 ## How it Works
 
@@ -60,7 +63,17 @@ The insights agent synthesizes a human‑readable summary of the current cash‑
 
 ### Dashboard
 
-The `/dashboard` endpoint renders an HTML page using Jinja2.  It lists customers, invoices, matched payments, scores, and insights.  This is intentionally basic; a real MVP could use React or Next.js and integrate with authentication and notification services.
+The Streamlit dashboard (`streamlit_app.py`) provides an interactive web interface with:
+
+* **Real-time KPI metrics** showing Total AR Outstanding, Unmatched Payments, Average Days Overdue, and Collection Effectiveness
+* **Interactive Plotly visualizations** including AR aging analysis, customer risk scores, match confidence distribution, and payment timelines
+* **Filterable data tables** for invoices, payments, and matches with advanced column configuration
+* **Tabbed navigation** organizing different views (Overview, Invoices, Payments, Matches, Insights)
+* **Sidebar controls** for manual data sync, customer filtering, date range selection, and confidence threshold adjustment
+* **Session state management** to persist data between interactions without unnecessary recomputation
+* **Caching** using `@st.cache_data` for efficient data loading and processing
+
+This is a production-ready UI framework that could be extended with authentication, role-based access control, and notification services.
 
 ## Future Enhancements
 
