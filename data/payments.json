@@ -1,0 +1,23 @@
+[
+  {
+    "payment_id": "PAY-001",
+    "customer_id": "CUST-001",
+    "payment_date": "2026-02-05",
+    "amount": 5000.00,
+    "reference": "INV-001"
+  },
+  {
+    "payment_id": "PAY-002",
+    "customer_id": "CUST-001",
+    "payment_date": "2026-02-25",
+    "amount": 20000.00,
+    "reference": ""
+  },
+  {
+    "payment_id": "PAY-003",
+    "customer_id": "CUST-002",
+    "payment_date": "2026-01-20",
+    "amount": 5000.00,
+    "reference": "INV-003"
+  }
+]
