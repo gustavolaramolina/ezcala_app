@@ -242,7 +242,7 @@ def main():
         
         st.divider()
         
-        st.header("🔍 Filters")
+        st.header("🔍 Filtros")
         
         # Initialize session state for data
         if "data_loaded" not in st.session_state:
