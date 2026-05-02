@@ -34,25 +34,25 @@ st.set_page_config(
 # CACHED DATA LOADING FUNCTIONS
 # ============================================================================
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def load_data():
     """Load invoices and payments from JSON files."""
     return sync_agent.sync()
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def run_matching():
     """Execute payment-to-invoice matching algorithm."""
     return matching_agent.reconcile()
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def compute_customer_scores():
     """Calculate risk scores for all customers."""
     return scoring_agent.compute_scores()
 
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def generate_ai_insights():
     """Generate cash flow insights summary."""
     return insights_agent.generate_insights()
@@ -229,34 +229,27 @@ def main():
     # SIDEBAR - Controls and Filters
     # ========================================================================
     
+    # Initialize session state
+    if "data_loaded" not in st.session_state:
+        st.session_state.data_loaded = False
+    
     with st.sidebar:
         st.header("⚙️ Controles")
         
         # Manual sync button
         if st.button("🔄 Sync Data", type="primary", use_container_width=True):
-            # Clear all caches to reload data
             st.cache_data.clear()
+            data_cache.reset()
+            load_data()
             st.session_state.data_loaded = True
-            st.success("Data synced successfully!")
+            st.success("✅ Data synced successfully!")
         
         st.divider()
         
         st.header("🔍 Filtros")
         
-        # Auto-load data on first run
-        if "data_loaded" not in st.session_state:
-            st.session_state.data_loaded = False
-        
-        # Load data if needed
-        if not st.session_state.data_loaded:
-            try:
-                load_data()
-                st.session_state.data_loaded = True
-            except Exception as e:
-                st.error(f"Error loading data: {e}")
-        
         # Check if data is available
-        has_data = len(data_cache.invoices) > 0
+        has_data = st.session_state.data_loaded and len(data_cache.invoices) > 0
         
         if has_data:
             # Customer filter
