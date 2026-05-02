@@ -236,17 +236,24 @@ def main():
         if st.button("🔄 Sync Data", type="primary", use_container_width=True):
             # Clear all caches to reload data
             st.cache_data.clear()
-            load_data()
+            st.session_state.data_loaded = True
             st.success("Data synced successfully!")
-            st.rerun()
         
         st.divider()
         
         st.header("🔍 Filtros")
         
-        # Initialize session state for data
+        # Auto-load data on first run
         if "data_loaded" not in st.session_state:
             st.session_state.data_loaded = False
+        
+        # Load data if needed
+        if not st.session_state.data_loaded:
+            try:
+                load_data()
+                st.session_state.data_loaded = True
+            except Exception as e:
+                st.error(f"Error loading data: {e}")
         
         # Check if data is available
         has_data = len(data_cache.invoices) > 0
