@@ -230,7 +230,7 @@ def main():
     # ========================================================================
     
     with st.sidebar:
-        st.header("⚙️ Controls")
+        st.header("⚙️ Controles")
         
         # Manual sync button
         if st.button("🔄 Sync Data", type="primary", use_container_width=True):
